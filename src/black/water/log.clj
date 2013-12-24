@@ -4,6 +4,7 @@
 
 ;; Color global variables, rebind as thou wilt.
 (def sql-color :green)
+(def params-color :cyan)
 (def time-color :red)
 
 (def logga nil)
@@ -21,14 +22,17 @@
                   " ")))
 
 (defn log-sql
-  "Given the sql string and the milliseconds it took to execute, print
-   a (possibly) colorized readout of the string and the millis."
-  [sql millis]
+  "Given the sql string, parameters, and the milliseconds it took to
+   execute, print a (possibly) colorized readout of the string and the
+   millis."
+  [sql params millis]
   (let [clean-sql (sanitize sql)
         formatted (str (style clean-sql sql-color)
-                       "| took:"
+                       " | params: "
+                       (style params params-color)
+                       " | took: "
                        (style millis time-color)
-                       "ms")]
+                       " ms")]
     (if (and logga (fn? logga))
       (logga clean-sql millis)
       (println formatted))))
