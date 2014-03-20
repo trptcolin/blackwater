@@ -25,14 +25,16 @@
   "Given the sql string, parameters, and the milliseconds it took to
    execute, print a (possibly) colorized readout of the string and the
    millis."
-  [sql params millis]
-  (let [clean-sql (sanitize sql)
-        formatted (str (style clean-sql sql-color)
-                       " | params: "
-                       (style params params-color)
-                       " | took: "
-                       (style millis time-color)
-                       " ms")]
-    (if (and logga (fn? logga))
-      (logga clean-sql millis)
-      (println formatted))))
+  ([sql millis] (log-sql sql nil millis))
+  ([sql params millis]
+   (let [clean-sql (sanitize sql)
+         formatted (str (style clean-sql sql-color)
+                        (when params
+                          (str " | params: "
+                               (style params params-color)))
+                        " | took: "
+                        (style millis time-color)
+                        " ms")]
+     (if (and logga (fn? logga))
+       (logga clean-sql millis)
+       (println formatted)))))
